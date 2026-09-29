@@ -4,15 +4,18 @@
 const mongoose = require("mongoose");
 mongoose.connect("mongodb://localhost:27017/learning_mongodb");
 
-const userSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true },
-  age: Number,
-  role: { type: String, default: "user" },
-  score: { type: Number, default: 0 },
-  hobbies: [String],
-  isActive: { type: Boolean, default: true },
-}, { timestamps: true });
+const userSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true },
+    email: { type: String, required: true },
+    age: Number,
+    role: { type: String, default: "user" },
+    score: { type: Number, default: 0 },
+    hobbies: [String],
+    isActive: { type: Boolean, default: true },
+  },
+  { timestamps: true },
+);
 
 const User = mongoose.model("User", userSchema);
 
@@ -21,10 +24,35 @@ async function demo() {
 
   // Seed data
   const users = await User.create([
-    { name: "Praveen", email: "praveen@email.com", age: 22, role: "admin", score: 85, hobbies: ["coding", "reading"] },
-    { name: "Jane", email: "jane@email.com", age: 25, score: 72, hobbies: ["painting"] },
-    { name: "Mike", email: "mike@email.com", age: 30, score: 90, hobbies: ["gaming", "coding"] },
-    { name: "Sara", email: "sara@email.com", age: 21, score: 65, hobbies: ["yoga"] },
+    {
+      name: "Praveen",
+      email: "praveen@email.com",
+      age: 22,
+      role: "admin",
+      score: 85,
+      hobbies: ["coding", "reading"],
+    },
+    {
+      name: "Jane",
+      email: "jane@email.com",
+      age: 25,
+      score: 72,
+      hobbies: ["painting"],
+    },
+    {
+      name: "Mike",
+      email: "mike@email.com",
+      age: 30,
+      score: 90,
+      hobbies: ["gaming", "coding"],
+    },
+    {
+      name: "Sara",
+      email: "sara@email.com",
+      age: 21,
+      score: 65,
+      hobbies: ["yoga"],
+    },
   ]);
 
   // ============================================
@@ -39,7 +67,7 @@ async function demo() {
   const newDoc = await User.findByIdAndUpdate(
     users[0]._id,
     { age: 24 },
-    { new: true } // Return updated document
+    { new: true }, // Return updated document
   );
   console.log("New doc age:", newDoc.age); // 24 (new value)
 
@@ -47,7 +75,7 @@ async function demo() {
   const validated = await User.findByIdAndUpdate(
     users[1]._id,
     { name: "Jane Updated" },
-    { new: true, runValidators: true }
+    { new: true, runValidators: true },
   );
   console.log("Validated update:", validated.name);
 
@@ -58,7 +86,7 @@ async function demo() {
   const updated = await User.findOneAndUpdate(
     { email: "mike@email.com" }, // Filter
     { score: 95 }, // Update
-    { new: true }
+    { new: true },
   );
   console.log("findOneAndUpdate:", updated.name, updated.score);
 
@@ -66,10 +94,7 @@ async function demo() {
   // updateOne() — Update one document (doesn't return the doc)
   // ============================================
 
-  const result1 = await User.updateOne(
-    { name: "Sara" },
-    { score: 70 }
-  );
+  const result1 = await User.updateOne({ name: "Sara" }, { score: 70 });
   console.log("updateOne:", result1);
   // { acknowledged: true, modifiedCount: 1, matchedCount: 1 }
 
@@ -79,7 +104,7 @@ async function demo() {
 
   const result2 = await User.updateMany(
     { role: "user" }, // All users with role "user"
-    { isActive: true }
+    { isActive: true },
   );
   console.log("updateMany:", result2.modifiedCount, "documents updated");
 
@@ -135,40 +160,6 @@ async function demo() {
   });
   const addToSet = await User.findById(users[0]._id).select("hobbies");
   console.log("After $addToSet:", addToSet.hobbies);
-
-  // ============================================
-  // Options
-  // ============================================
-
-  // { new: true }           → Return updated document (default: old document)
-  // { runValidators: true } → Run schema validators on update
-  // { upsert: true }        → Create the document if it doesn't exist
-
-  // Upsert example: update if found, create if not
-  const upserted = await User.findOneAndUpdate(
-    { email: "new@email.com" }, // No user with this email
-    { name: "New User", email: "new@email.com", age: 20 },
-    { new: true, upsert: true } // Create it!
-  );
-  console.log("Upserted:", upserted.name, "(created:", upserted.isNew === undefined, ")");
-
-  // ============================================
-  // Update via .save() (on a Mongoose document)
-  // ============================================
-
-  const user = await User.findById(users[2]._id);
-  user.name = "Mike Updated";
-  user.score = 100;
-  await user.save(); // Triggers validation and middleware hooks
-  console.log("Save update:", user.name, user.score);
-
-  // .save() vs findByIdAndUpdate():
-  // .save()             → triggers pre/post save hooks, full validation
-  // findByIdAndUpdate() → does NOT trigger save hooks by default, faster
-
-  // Clean up
-  await User.deleteMany({});
-  await mongoose.disconnect();
 }
 
 demo();

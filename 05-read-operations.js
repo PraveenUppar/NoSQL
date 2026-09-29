@@ -22,14 +22,64 @@ async function demo() {
 
   // Seed data
   await User.create([
-    { name: "Praveen", email: "praveen@email.com", age: 22, role: "admin", city: "Delhi", hobbies: ["coding", "reading"] },
-    { name: "Jane", email: "jane@email.com", age: 25, city: "Mumbai", hobbies: ["painting"] },
-    { name: "Mike", email: "mike@email.com", age: 30, city: "Delhi", hobbies: ["gaming", "coding"] },
-    { name: "Sara", email: "sara@email.com", age: 21, city: "Bangalore", hobbies: ["yoga", "cooking"] },
-    { name: "Alex", email: "alex@email.com", age: 27, role: "admin", city: "Chennai", hobbies: ["reading"] },
-    { name: "Emma", email: "emma@email.com", age: 23, city: "Mumbai", isActive: false },
-    { name: "Tom", email: "tom@email.com", age: 35, city: "Delhi", hobbies: ["cricket"] },
-    { name: "Lisa", email: "lisa@email.com", age: 24, city: "Bangalore", hobbies: ["dancing", "singing"] },
+    {
+      name: "Praveen",
+      email: "praveen@email.com",
+      age: 22,
+      role: "admin",
+      city: "Delhi",
+      hobbies: ["coding", "reading"],
+    },
+    {
+      name: "Jane",
+      email: "jane@email.com",
+      age: 25,
+      city: "Mumbai",
+      hobbies: ["painting"],
+    },
+    {
+      name: "Mike",
+      email: "mike@email.com",
+      age: 30,
+      city: "Delhi",
+      hobbies: ["gaming", "coding"],
+    },
+    {
+      name: "Sara",
+      email: "sara@email.com",
+      age: 21,
+      city: "Bangalore",
+      hobbies: ["yoga", "cooking"],
+    },
+    {
+      name: "Alex",
+      email: "alex@email.com",
+      age: 27,
+      role: "admin",
+      city: "Chennai",
+      hobbies: ["reading"],
+    },
+    {
+      name: "Emma",
+      email: "emma@email.com",
+      age: 23,
+      city: "Mumbai",
+      isActive: false,
+    },
+    {
+      name: "Tom",
+      email: "tom@email.com",
+      age: 35,
+      city: "Delhi",
+      hobbies: ["cricket"],
+    },
+    {
+      name: "Lisa",
+      email: "lisa@email.com",
+      age: 24,
+      city: "Bangalore",
+      hobbies: ["dancing", "singing"],
+    },
   ]);
 
   // ============================================
@@ -42,10 +92,16 @@ async function demo() {
 
   // Find with filter
   const delhiUsers = await User.find({ city: "Delhi" });
-  console.log("Delhi users:", delhiUsers.map((u) => u.name));
+  console.log(
+    "Delhi users:",
+    delhiUsers.map((u) => u.name),
+  );
 
   const admins = await User.find({ role: "admin" });
-  console.log("Admins:", admins.map((u) => u.name));
+  console.log(
+    "Admins:",
+    admins.map((u) => u.name),
+  );
 
   const activeUsers = await User.find({ isActive: true });
   console.log("Active users:", activeUsers.length);
@@ -87,19 +143,33 @@ async function demo() {
 
   // Sort by age ascending (youngest first)
   const youngest = await User.find().sort({ age: 1 }).select("name age");
-  console.log("Youngest first:", youngest.map((u) => `${u.name}(${u.age})`));
+  console.log(
+    "Youngest first:",
+    youngest.map((u) => `${u.name}(${u.age})`),
+  );
 
   // Sort by age descending (oldest first)
   const oldest = await User.find().sort({ age: -1 }).select("name age");
-  console.log("Oldest first:", oldest.map((u) => `${u.name}(${u.age})`));
+  console.log(
+    "Oldest first:",
+    oldest.map((u) => `${u.name}(${u.age})`),
+  );
 
   // Sort by name alphabetically
   const alphabetical = await User.find().sort({ name: 1 }).select("name");
-  console.log("A-Z:", alphabetical.map((u) => u.name));
+  console.log(
+    "A-Z:",
+    alphabetical.map((u) => u.name),
+  );
 
   // Sort by multiple fields
-  const multiSort = await User.find().sort({ city: 1, age: -1 }).select("name city age");
-  console.log("By city then age:", multiSort.map((u) => `${u.city}-${u.name}(${u.age})`));
+  const multiSort = await User.find()
+    .sort({ city: 1, age: -1 })
+    .select("name city age");
+  console.log(
+    "By city then age:",
+    multiSort.map((u) => `${u.city}-${u.name}(${u.age})`),
+  );
 
   // ============================================
   // limit() and skip() — Pagination
@@ -107,11 +177,17 @@ async function demo() {
 
   // First 3 users
   const first3 = await User.find().limit(3).select("name");
-  console.log("First 3:", first3.map((u) => u.name));
+  console.log(
+    "First 3:",
+    first3.map((u) => u.name),
+  );
 
   // Skip first 3, get next 3 (page 2)
   const page2 = await User.find().skip(3).limit(3).select("name");
-  console.log("Page 2:", page2.map((u) => u.name));
+  console.log(
+    "Page 2:",
+    page2.map((u) => u.name),
+  );
 
   // Pagination formula:
   // Page 1: skip(0).limit(5)    → items 1-5
@@ -124,20 +200,10 @@ async function demo() {
     .skip((page - 1) * perPage)
     .limit(perPage)
     .select("name");
-  console.log(`Page ${page}:`, paginated.map((u) => u.name));
-
-  // ============================================
-  // lean() — Return plain JS objects (faster)
-  // ============================================
-
-  // Normal: returns Mongoose documents (with methods like .save())
-  const normal = await User.findOne({ name: "Praveen" });
-  console.log("Mongoose doc:", normal instanceof mongoose.Document); // true
-
-  // Lean: returns plain JS objects (2-3x faster, but no Mongoose methods)
-  const lean = await User.findOne({ name: "Praveen" }).lean();
-  console.log("Plain object:", lean instanceof mongoose.Document); // false
-  // Use lean() when you only need to READ data (no .save(), no hooks)
+  console.log(
+    `Page ${page}:`,
+    paginated.map((u) => u.name),
+  );
 
   // ============================================
   // countDocuments() — Count matching documents
@@ -171,22 +237,6 @@ async function demo() {
 
   const roles = await User.distinct("role");
   console.log("Unique roles:", roles);
-
-  // ============================================
-  // Chaining Multiple Methods
-  // ============================================
-
-  // Find active Delhi users, sorted by age, return only name and age
-  const result = await User.find({ city: "Delhi", isActive: true })
-    .sort({ age: 1 })
-    .select("name age")
-    .limit(5)
-    .lean();
-  console.log("Chained query:", result);
-
-  // Clean up
-  await User.deleteMany({});
-  await mongoose.disconnect();
 }
 
 demo();
