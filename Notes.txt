@@ -1,0 +1,64 @@
+MongoDB & Mongoose Revision - Key Concepts
+=============================================
+
+MongoDB is a NoSQL document database. Instead of tables with rows and columns (like SQL),
+MongoDB stores data as flexible JSON-like documents inside collections.
+
+Key Terminology:
+- Database    → A container for collections (like a SQL database)
+- Collection  → A group of documents (like a SQL table)
+- Document    → A single record stored as BSON/JSON (like a SQL row)
+- Field       → A key-value pair in a document (like a SQL column)
+- _id         → Auto-generated unique identifier for every document (ObjectId)
+- BSON        → Binary JSON — MongoDB's internal storage format
+
+MongoDB vs SQL:
+- SQL Database    → MongoDB Database
+- SQL Table       → MongoDB Collection
+- SQL Row         → MongoDB Document
+- SQL Column      → MongoDB Field
+- SQL Primary Key → MongoDB _id (ObjectId)
+- SQL JOIN        → MongoDB populate() or $lookup
+
+Mongoose:
+- Mongoose is an ODM (Object Document Mapper) for MongoDB and Node.js.
+- It provides schema-based modeling — you define the structure of your documents.
+- It adds validation, type casting, query building, hooks, and more on top of MongoDB.
+- Without Mongoose, you'd use the native MongoDB driver (lower-level, more manual work).
+
+How to use this folder:
+1. Read the numbered files in order.
+2. Install dependencies: npm init -y && npm install mongoose
+3. Run files with: node filename.js
+4. You need MongoDB running locally (mongod) or a MongoDB Atlas connection string.
+5. Practice after every few topics.
+6. Complete assignments without looking at solutions first.
+
+MongoDB Learning Path:
+1. Intro & Setup: What is MongoDB, connecting with Mongoose
+2. Schemas & Models: Defining document structure, data types
+3. Schema Options: Field validators, timestamps, strict mode
+4. Create: insert documents (create, save, insertMany)
+5. Read: find documents (find, findById, findOne, select, sort, limit)
+6. Query Operators: $gt, $in, $or, $regex, $exists, $elemMatch
+7. Update: modify documents ($set, $inc, $push, $pull, findByIdAndUpdate)
+8. Delete: remove documents (findByIdAndDelete, deleteMany, soft delete)
+9. Validation: built-in validators, custom validators, error handling
+10. Middleware/Hooks: pre/post save, find, update — run logic automatically
+11. Methods & Virtuals: instance methods, static methods, computed fields
+12. References & Populate: linking collections, populate, embedding vs referencing
+13. Aggregation Pipeline: $match, $group, $sort, $project, $lookup, $unwind
+14. Indexes & Performance: speed up queries, compound indexes, text search
+15. Transactions & Advanced: atomic operations, discriminators, plugins, change streams
+
+ObjectId:
+- Every document automatically gets an _id field with a unique ObjectId.
+- ObjectId is a 12-byte value: 4 bytes timestamp + 5 bytes random + 3 bytes counter.
+- Example: ObjectId("64abc123def456789012abcd")
+- You can extract the creation timestamp from an ObjectId.
+
+CRUD Operations:
+- Create → Model.create(), new Model().save(), Model.insertMany()
+- Read   → Model.find(), Model.findById(), Model.findOne()
+- Update → Model.findByIdAndUpdate(), Model.updateOne(), Model.updateMany()
+- Delete → Model.findByIdAndDelete(), Model.deleteOne(), Model.deleteMany()
